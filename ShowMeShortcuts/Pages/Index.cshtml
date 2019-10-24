@@ -1,0 +1,31 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    var welcomes = (QuickType.Welcome[]) ViewData["Welcome"];
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Shortcut</th>
+            <th>Sofware</th>
+            <th>It Does</th>
+        </tr>
+        @{ 
+            foreach (QuickType.Welcome welcome in welcomes) {
+                <tr>
+                    <td>@welcome.FirstName</td>
+                    <td>@welcome.LastName</td>
+                    <td>@welcome.KeyboardShortcut</td>
+                    <td>@welcome.Software</td>
+                    <td>@welcome.WhatDo</td>
+                </tr>
+                }
+            }
+
+    </table>
+</div>
