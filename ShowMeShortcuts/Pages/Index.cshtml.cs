@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using QuickType;
 
 namespace ShowMeShortcuts.Pages
@@ -25,8 +27,17 @@ namespace ShowMeShortcuts.Pages
             using (var webClient = new WebClient())
             {
                 String jsonString = webClient.DownloadString("https://roster19fs702420191018063705.azurewebsites.net/Feed");
-                var welcome = Welcome.FromJson(jsonString);
-                ViewData["Welcome"] = welcome;
+                JSchema schema = JSchema.Parse(System.IO.File.ReadAllText("WelcomeSchema.json"));
+                JArray jsonArray = JArray.Parse(jsonString);
+                if (jsonArray.IsValid(schema))
+                {
+                    Welcome[] welcome = Welcome.FromJson(jsonString);
+                    ViewData["Welcome"] = welcome;
+                } else
+                {
+                    Console.WriteLine("Not valid.  Fool.");
+                    ViewData["Welcome"] = new Welcome[0];
+                }
             }
         }
     }
