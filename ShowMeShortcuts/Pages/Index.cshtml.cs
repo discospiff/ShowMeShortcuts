@@ -29,16 +29,21 @@ namespace ShowMeShortcuts.Pages
                 String jsonString = webClient.DownloadString("https://roster19fs702420191018063705.azurewebsites.net/Feed");
                 JSchema schema = JSchema.Parse(System.IO.File.ReadAllText("WelcomeSchema.json"));
                 JArray jsonArray = JArray.Parse(jsonString);
-                if (jsonArray.IsValid(schema))
+                IList<string> validationEvents = new List<string>();
+                if (jsonArray.IsValid(schema, out validationEvents))
                 {
                     Welcome[] welcome = Welcome.FromJson(jsonString);
                     ViewData["Welcome"] = welcome;
                 } else
                 {
                     Console.WriteLine("Not valid.  Fool.");
+                    foreach(string evt in validationEvents) {
+                        Console.WriteLine(evt);
+                    }
                     ViewData["Welcome"] = new Welcome[0];
                 }
             }
         }
     }
+
 }
